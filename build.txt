@@ -1,0 +1,3 @@
+displayName = PS3 Mod
+author = Fifteefihve
+version = 0.1
