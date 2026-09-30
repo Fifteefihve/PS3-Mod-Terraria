@@ -49,14 +49,6 @@ namespace PS3Mod.Content.Projectiles
                 dust.velocity *= 1.5f;
                 dust.scale *= 0.9f;
             }
-            Projectile.NewProjectile(
-                Projectile.GetSource_FromThis(),
-                Projectile.Center,
-                Vector2.Zero,
-                ProjectileID.HellfireArrow,
-                Projectile.damage,
-                Projectile.owner
-            );
         }
     }
 }

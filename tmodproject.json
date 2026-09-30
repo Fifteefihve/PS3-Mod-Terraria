@@ -1,0 +1,15 @@
+{
+  "rootNamespace": "PS3Mod",
+  "fileMap": {
+    "Content/Items/Armor/DragonBreastplate.cs": "PS3Mod.Content.Items.Armor",
+    "Content/Items/Armor/DragonGreaves.cs": "PS3Mod.Content.Items.Armor",
+    "Content/Items/Armor/DragonMask.cs": "PS3Mod.Content.Items.Armor",
+    "Content/Items/Armor/Vanity/OcramMask.cs": "PS3Mod.Content.Items.Armor.Vanity",
+    "Content/Items/Armor/SpectralHeadgear.cs": "PS3Mod.Content.Items.Armor",
+    "Content/Items/Armor/SpectralArmor.cs": "PS3Mod.Content.Items.Armor",
+    "Content/Items/Armor/SpectralSubligar.cs": "PS3Mod.Content.Items.Armor",
+    "Content/Items/Armor/TitanHelmet.cs": "PS3Mod.Content.Items.Armor",
+    "Content/Items/Armor/TitanLeggings.cs": "PS3Mod.Content.Items.Armor",
+    "Content/Items/Armor/TitanMail.cs": "PS3Mod.Content.Items.Armor"
+  }
+}

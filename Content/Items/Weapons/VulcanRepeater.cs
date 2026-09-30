@@ -29,7 +29,7 @@ namespace PS3Mod.Content.Items.Weapons
             // Weapon Properties
             Item.shootSpeed = 10f; // higher = faster
             Item.DamageType = DamageClass.Ranged; // Sets the damage type to ranged.
-            Item.damage = 56; // Sets the item's damage. Note that projectiles shot by this weapon will use its and the used ammunition's damage added together.
+            Item.damage = 52; // Sets the item's damage. Note that projectiles shot by this weapon will use its and the used ammunition's damage added together.
             Item.crit = 4;
             Item.knockBack = 2.5f; // Sets the item's knockback. Note that projectiles shot by this weapon will use its and the used ammunition's knockback added together.
             Item.noMelee = true; // So the item's animation doesn't do damage.
@@ -37,6 +37,7 @@ namespace PS3Mod.Content.Items.Weapons
             // Gun Properties
             Item.shoot = ProjectileID.PurificationPowder; // For some reason, all the guns in the vanilla source have this.
             Item.useAmmo = AmmoID.Arrow; // The "ammo Id" of the ammo item that this weapon uses. Ammo IDs are magic numbers that usually correspond to the item id of one item that most commonly represent the ammo type.
+            Item.UseSound = SoundID.Item5; // The sound that this item plays when used.
         }
 
         // Please see Content/ExampleRecipes.cs for a detailed explanation of recipe creation.

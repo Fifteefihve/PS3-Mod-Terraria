@@ -1,26 +1,6 @@
 Items: {
-	Tizona: {
-		Tooltip: ""
-		DisplayName: Tizona
-	}
-
-	Soul_of_Blight: {
-		Tooltip: ""
-		DisplayName: Soul_of_ Blight
-	}
-
 	SpectralArrow: {
-		Tooltip: ""
 		DisplayName: Spectral Arrow
-	}
-
-	SoulofBlight: {
-		DisplayName: Soulof Blight
-		Tooltip: ""
-	}
-
-	Tonbogiri: {
-		DisplayName: Tonbogiri
 		Tooltip: ""
 	}
 
@@ -34,9 +14,19 @@ Items: {
 		Tooltip: ""
 	}
 
+	Tizona: {
+		DisplayName: Tizona
+		Tooltip: ""
+	}
+
+	Tonbogiri: {
+		DisplayName: Tonbogiri
+		Tooltip: ""
+	}
+
 	VulcanRepeater: {
 		DisplayName: Vulcan Repeater
-		Tooltip: ""
+		Tooltip: "Transforms any suitable ammo into Vulcan Bolts"
 	}
 }
 
