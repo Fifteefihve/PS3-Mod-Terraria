@@ -56,12 +56,8 @@ namespace PS3Mod.Content.NPCs
                 NPC.HitEffect(0, 10);
                 NPC.active = false;
             }
-
-            if (NPC.position.X > Main.npc[(int)NPC.ai[1]].position.X)
-            NPC.spriteDirection = 1;
-
-            if (NPC.position.X < Main.npc[(int)NPC.ai[1]].position.X)
-            NPC.spriteDirection = -1;
+            if (NPC.position.X > Main.npc[(int)NPC.ai[1]].position.X) NPC.spriteDirection = 1;
+            if (NPC.position.X < Main.npc[(int)NPC.ai[1]].position.X) NPC.spriteDirection = -1;
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)

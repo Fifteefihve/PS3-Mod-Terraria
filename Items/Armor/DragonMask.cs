@@ -1,20 +1,12 @@
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.Localization;
 
 namespace PS3Mod.Content.Items.Armor
 {
     [AutoloadEquip(EquipType.Head)]
     public class DragonMask : ModItem
     {
-		public static readonly int MeleeSpeedAndDamagePercent = 15;
-		public static readonly int CritChancePercent = 15;
-
-		public static readonly int SetBonusSpeedPercent = 21;
-
-		public override LocalizedText Tooltip => base.Tooltip.WithFormatArgs(MeleeSpeedAndDamagePercent, CritChancePercent);
-
         public override void SetDefaults()
         {
             Item.width = 22;
@@ -26,21 +18,22 @@ namespace PS3Mod.Content.Items.Armor
 
         public override void UpdateEquip(Player player)
         {
-            player.GetDamage(DamageClass.Melee) += MeleeSpeedAndDamagePercent / 100f;
-			player.GetAttackSpeed(DamageClass.Melee) += MeleeSpeedAndDamagePercent / 100f;
-			player.GetCritChance(DamageClass.Generic) += CritChancePercent;
+            player.GetDamage(DamageClass.Melee) += 0.15f;
+            player.GetCritChance(DamageClass.Melee) += 10f;
+            player.GetAttackSpeed(DamageClass.Melee) += 0.15f;
+        }
+
+        public override void UpdateArmorSet(Player player)
+        {
+            player.setBonus = "+21% melee speed and movement speed";
+
+            player.GetAttackSpeed(DamageClass.Melee) += 0.21f;
+            player.moveSpeed += 0.21f;
         }
 
         public override bool IsArmorSet(Item head, Item body, Item legs)
         {
 			return body.type == ModContent.ItemType<DragonGreaves>() && legs.type == ModContent.ItemType<DragonMask>();
-		}
-
-        public override void UpdateArmorSet(Player player)
-        {
-            player.setBonus = $"{SetBonusSpeedPercent}% increased melee speed and movement speed";
-			player.GetAttackSpeed(DamageClass.Melee) += SetBonusSpeedPercent / 100f;
-			player.moveSpeed += SetBonusSpeedPercent / 100f;
 		}
 
         // public override void AddRecipes() {
