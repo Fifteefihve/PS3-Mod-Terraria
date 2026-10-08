@@ -6,7 +6,7 @@ Items: {
 
 	SoulOfBlight: {
 		DisplayName: Soul Of Blight
-		Tooltip: ""
+		Tooltip: The essence of infected creatures
 	}
 
 	Sharanga: {
@@ -26,7 +26,216 @@ Items: {
 
 	VulcanRepeater: {
 		DisplayName: Vulcan Repeater
-		Tooltip: "Transforms any suitable ammo into Vulcan Bolts"
+		Tooltip: Transforms any suitable ammo into Vulcan Bolts
+	}
+
+	DragonMask: {
+		DisplayName: Dragon Mask
+		SetBonus: "{0}% increased melee and movement speed"
+		Tooltip:
+			'''
+			{0}% increased melee speed and damage
+			{1}% increased critical strike chance
+			'''
+	}
+
+	DragonBreastplate: {
+		DisplayName: Dragon Breastplate
+		Tooltip:
+			'''
+			{0}% increased critical strike chance
+			{1}% increased melee damage
+			'''
+	}
+
+	DragonGreaves: {
+		DisplayName: Dragon Greaves
+		Tooltip:
+			'''
+			{0}% increased movement speed
+			{1}% increased melee speed
+			'''
+	}
+
+	SpectralHeadgear: {
+		DisplayName: Spectral Headgear
+		Tooltip:
+			'''
+			Increases maximum mana by {0}
+			{1}% increased magic damage and critical strike chance
+			'''
+	}
+
+	SpectralArmor: {
+		DisplayName: Spectral Armor
+		Tooltip:
+			'''
+			{0}% increased magic damage, {1}% reduced mana use
+			{2}% increased magic critical strike chance
+			'''
+	}
+
+	SpectralSubligar: {
+		DisplayName: Spectral Subligar
+		Tooltip:
+			'''
+			{0}% increased movement speed and magic damage
+			Increases maximum mana by {1}
+			'''
+	}
+
+	TitanHelmet: {
+		DisplayName: Titan Helmet
+		Tooltip:
+			'''
+			{0}% increased ranged damage, {1}% chance to not consume ammo
+			{2}% increased ranged critical strike chance
+			'''
+	}
+
+	TitanMail: {
+		DisplayName: Titan Mail
+		Tooltip:
+			'''
+			{0}% increased ranged damage, {1}% chance to not consume ammo
+			{2}% increased ranged critical strike chance
+			'''
+	}
+
+	TitanLeggings: {
+		DisplayName: Titan Leggings
+		Tooltip:
+			'''
+			{0}% increased movement speed and ranged damage
+			{1}% chance to not consume ammo
+			'''
+	}
+
+	WolfFangItem: {
+		DisplayName: Wolf Fang
+		Tooltip: Summons a pet werewolf
+	}
+
+	VialofBlood: {
+		DisplayName: Vial of Blood
+		Tooltip: Summons a pet bat
+	}
+
+	CabbagePetItem: {
+		DisplayName: Cabbage
+		Tooltip: Summons a pet guinea pig
+	}
+
+	HoneycombPetItem: {
+		DisplayName: Honeycomb
+		Tooltip: Summons a pet tiphia
+	}
+
+	BrainItem: {
+		DisplayName: Brain
+		Tooltip: Summons a pet zombie
+	}
+
+	PetriDishPetItem: {
+		DisplayName: Petri Dish
+		Tooltip: Summons a pet slime
+	}
+
+	AlbinoAntlionBanner: {
+		DisplayName: Albino Antlion Banner
+		Tooltip: ""
+	}
+
+	ArchDemonBanner: {
+		DisplayName: Arch Demon Banner
+		Tooltip: ""
+	}
+
+	ArchWyvernBanner: {
+		DisplayName: Arch Wyvern Banner
+		Tooltip: ""
+	}
+
+	DragonHornetBanner: {
+		DisplayName: Dragon Hornet Banner
+		Tooltip: ""
+	}
+
+	DragonSkullBanner: {
+		DisplayName: Dragon Skull Banner
+		Tooltip: ""
+	}
+
+	DragonSnatcherBanner: {
+		DisplayName: Dragon Snatcher Banner
+		Tooltip: ""
+	}
+
+	ShadowHammerBanner: {
+		DisplayName: Shadow Hammer Banner
+		Tooltip: ""
+	}
+
+	ShadowMummyBanner: {
+		DisplayName: Shadow Mummy Banner
+		Tooltip: ""
+	}
+
+	ShadowSlimeBanner: {
+		DisplayName: Shadow Slime Banner
+		Tooltip: ""
+	}
+
+	SpectralElementalBanner: {
+		DisplayName: Spectral Elemental Banner
+		Tooltip: ""
+	}
+
+	SpectralGastropodBanner: {
+		DisplayName: Spectral Gastropod Banner
+		Tooltip: ""
+	}
+
+	SpectralMummyBanner: {
+		DisplayName: Spectral Mummy Banner
+		Tooltip: ""
+	}
+
+	VampireMinerBanner: {
+		DisplayName: Vampire Miner Banner
+		Tooltip: ""
+	}
+
+	SuspiciousLookingSkull: {
+		Tooltip: ""
+		DisplayName: Suspicious Looking Skull
+	}
+
+	SoulofBlight: {
+		Tooltip: The essence of infected creatures
+		DisplayName: Soul of Blight
+	}
+
+	OcramTrophy: {
+		Tooltip: ""
+		DisplayName: Ocram Trophy
+	}
+
+	OcramMask: {
+		Tooltip: ""
+		DisplayName: Ocram Mask
+	}
+
+	Items: {
+		OldHorsemansBlade: {
+			DisplayName: Old Horseman's Blade
+			Tooltip: rip horsemans blade 1.2.1 - 1.4.4
+		}
+	}
+
+	OldHorsemansBlade: {
+		DisplayName: Horsemans Blade
+		Tooltip: ""
 	}
 }
 
@@ -34,4 +243,118 @@ Projectiles: {
 	SpectralArrowProjectile.DisplayName: Spectral Arrow Projectile
 	TonbogiriProjectile.DisplayName: Tonbogiri Projectile
 	VulcanBoltProjectile.DisplayName: Vulcan Bolt Projectile
+	WolfPetProjectile.DisplayName: Wolf Pet Projectile
+	BatPetProjectile.DisplayName: Bat Pet Projectile
+	GuineaPigProjectile.DisplayName: Guinea Pig Projectile
+	WaspPetProjectile.DisplayName: Wasp Pet Projectile
+	ZombiePetProjectile.DisplayName: Zombie Pet Projectile
+	PetSlimeProjectile.DisplayName: Pet Slime Projectile
+	OldTerraBeam.DisplayName: Old Terra Beam
+}
+
+Buffs: {
+	WolfPetBuff: {
+		DisplayName: Wolf Pet Buff
+		Description: Mods.PS3Mod.Buffs.WolfPetBuff.Description
+	}
+
+	BatPetBuff: {
+		DisplayName: Bat Pet Buff
+		Description: Mods.PS3Mod.Buffs.BatPetBuff.Description
+	}
+
+	GuineaPigPetBuff: {
+		DisplayName: Guinea Pig Pet Buff
+		Description: Mods.PS3Mod.Buffs.GuineaPigPetBuff.Description
+	}
+
+	WaspPetBuff: {
+		DisplayName: Wasp Pet Buff
+		Description: Mods.PS3Mod.Buffs.WaspPetBuff.Description
+	}
+
+	ZombiePetBuff: {
+		DisplayName: Zombie Pet Buff
+		Description: Mods.PS3Mod.Buffs.ZombiePetBuff.Description
+	}
+
+	PetSlimePetBuff: {
+		DisplayName: Pet Slime Pet Buff
+		Description: Mods.PS3Mod.Buffs.PetSlimePetBuff.Description
+	}
+}
+
+Bestiary: {
+	VampireMiner: A miner who never left the caves, and now hungers for more than ore.
+	ShadowMummy: The cursed sands of the Corruption bind the restless dead to shadow, silencing the living who wander near.
+	SpectralMummy: Hallowed light has woken these mummies, and its glow leaves travelers dazed and confused.
+	ShadowHammer: A hammer steeped in dark magic that spins itself up and lunges through the stone of the Corruption.
+	SpectralElemental: A chaos elemental touched by spirits of light, slow to move but dangerous to stand near.
+	DragonHornet: A larger, armored relative of the common hornet that fires its stingers from deep in the jungle.
+	DragonSnatcher: A hardier snatcher that clamps down on anything that wanders too close to its roots.
+	DragonSkull: A skull larger than the cursed ones, with a bite that can leave victims unable to use their items.
+	AlbinoAntlion: A pale antlion that buries itself in the sand and spits sand at anything passing overhead.
+	ArchDemon: A battle-hardened demon that rules the Underworld skies with volleys of spinning blades.
+	ArchWyvern: A massive bronze wyvern that patrols the sky and tears through blocks to reach its prey.
+	ShadowSlime: A slime stained dark by the Corruption that breaks apart into smaller slimes when it dies.
+	SpectralGastropod: A gastropod that glows with spirit light and fires bolts of energy from within its shell.
+}
+
+NPCs: {
+	AlbinoAntlion: {
+		Bestiary: Mods.PS3Mod.NPCs.AlbinoAntlion.Bestiary
+		DisplayName: Albino Antlion
+	}
+
+	ArchWyvernHead: {
+		Bestiary: Mods.PS3Mod.NPCs.ArchWyvernHead.Bestiary
+		DisplayName: Arch Wyvern Head
+	}
+
+	DragonSnatcher: {
+		Bestiary: Mods.PS3Mod.NPCs.DragonSnatcher.Bestiary
+		DisplayName: Dragon Snatcher
+	}
+
+	ShadowHammer: {
+		Bestiary: Mods.PS3Mod.NPCs.ShadowHammer.Bestiary
+		DisplayName: Shadow Hammer
+	}
+
+	ShadowMummy: {
+		Bestiary: Mods.PS3Mod.NPCs.ShadowMummy.Bestiary
+		DisplayName: Shadow Mummy
+	}
+
+	ShadowSlime: {
+		Bestiary: Mods.PS3Mod.NPCs.ShadowSlime.Bestiary
+		DisplayName: Shadow Slime
+	}
+
+	SpectralGastropod: {
+		Bestiary: Mods.PS3Mod.NPCs.SpectralGastropod.Bestiary
+		DisplayName: Spectral Gastropod
+	}
+
+	SpectralMummy: {
+		Bestiary: Mods.PS3Mod.NPCs.SpectralMummy.Bestiary
+		DisplayName: Spectral Mummy
+	}
+
+	VampireMiner: {
+		Bestiary: Mods.PS3Mod.NPCs.VampireMiner.Bestiary
+		DisplayName: Vampire Miner
+	}
+
+	ArchDemon.DisplayName: Arch Demon
+	ArchWyvernBody1.DisplayName: Arch Wyvern Body1
+	ArchWyvernBody2.DisplayName: Arch Wyvern Body2
+	ArchWyvernBody3.DisplayName: Arch Wyvern Body3
+	ArchWyvernLegs.DisplayName: Arch Wyvern Legs
+	ArchWyvernTail.DisplayName: Arch Wyvern Tail
+	DragonHornet.DisplayName: Dragon Hornet
+	DragonSkull.DisplayName: Dragon Skull
+	SpectralElemental.DisplayName: Spectral Elemental
+	ServantofOcram.DisplayName: Servant of Ocram
+	Ocram.DisplayName: Ocram
 }

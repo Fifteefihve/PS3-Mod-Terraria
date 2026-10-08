@@ -1,0 +1,207 @@
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using Terraria;
+using Terraria.Audio;
+using Terraria.GameContent.Bestiary;
+using Terraria.GameContent.ItemDropRules;
+using Terraria.ID;
+using Terraria.Localization;
+using Terraria.ModLoader;
+using PS3Mod.Content.Items;
+using PS3Mod.Content.Items.Armor.Vanity;
+using PS3Mod.Content.Items.Placeable.Banners;
+using PS3Mod.Content.Items.Armor;
+using PS3Mod.Content.Items.Ammo;
+
+namespace PS3Mod.Content.NPCs.Bosses.Ocram
+{
+    [AutoloadBossHead]
+    public class Ocram : ModNPC
+    {
+        // === NEW: cooldown timer for the laser attack ===
+        private int laserTimer;
+
+        public override void SetStaticDefaults()
+        {
+            Main.npcFrameCount[NPC.type] = Main.npcFrameCount[NPCID.EyeofCthulhu];
+
+            NPCID.Sets.MPAllowedEnemies[Type] = true;
+
+            NPCID.Sets.SpecificDebuffImmunity[Type][BuffID.Confused] = true;
+            NPCID.Sets.SpecificDebuffImmunity[Type][BuffID.Poisoned] = true;
+            NPCID.Sets.SpecificDebuffImmunity[Type][BuffID.ShadowFlame] = true;
+
+            NPCID.Sets.BossBestiaryPriority.Add(Type);
+
+            NPCID.Sets.NPCBestiaryDrawModifiers drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers()
+            {
+                CustomTexturePath = "PS3Mod/Assets/Textures/Bestiary/Ocram_Bestiary",
+                Position = new Vector2(0, -20f),
+                Scale = 1f,
+                PortraitPositionYOverride = -20f,
+                PortraitScale = 1f
+            };
+            NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
+        }
+
+        public override void SetDefaults()
+        {
+            NPC.width = 190;
+            NPC.height = 180;
+
+            // Eye of Cthulhu AI
+            NPC.aiStyle = 4;
+            AIType = NPCID.EyeofCthulhu;
+            AnimationType = NPCID.EyeofCthulhu;
+
+            NPC.lifeMax = 54000;
+            NPC.damage = 55;
+            NPC.defense = 36;
+            NPC.knockBackResist = 0f;
+
+            NPC.value = Item.buyPrice(gold: 15);
+            NPC.npcSlots = 10f;
+
+            NPC.boss = true;
+            NPC.lavaImmune = true;
+            NPC.noGravity = true;
+            NPC.noTileCollide = true;
+
+            NPC.SpawnWithHigherTime(30);
+
+            NPC.HitSound = SoundID.NPCHit18;
+            NPC.DeathSound = SoundID.NPCDeath18;
+
+            NPC.alpha = 0;
+
+            // Music - vanilla boss music (no Consolaria custom tracks)
+            Music = MusicID.Boss5;
+        }
+
+        // === NEW: run vanilla AI, then layer our laser attack on top ===
+        public override void AI()
+        {
+            // Let the vanilla Eye of Cthulhu AI do all its normal movement / phase logic
+            base.AI();
+
+            // Eye of Cthulhu's "phase 2" starts around 50% HP.
+            // This is far more reliable than NPC.ai[0] for determining phase.
+            bool inPhaseOne = NPC.life > NPC.lifeMax * 0.5f;
+
+            if (inPhaseOne)
+            {
+                laserTimer++;
+                if (laserTimer >= 90) // every 1.5 seconds
+                {
+                    laserTimer = 0;
+                    FireLasers();
+                }
+            }
+            else
+            {
+                laserTimer = 0;
+            }
+        }
+
+        // === NEW: shoot a small spread of Wall of Flesh style lasers at the nearest player ===
+        private void FireLasers()
+        {
+            // Only the server (or singleplayer) spawns projectiles
+            if (Main.netMode == NetmodeID.MultiplayerClient)
+                return;
+
+            Player target = Main.player[NPC.target];
+            if (!target.active || target.dead)
+            {
+                NPC.TargetClosest(false);
+                target = Main.player[NPC.target];
+                if (!target.active || target.dead)
+                    return;
+            }
+
+            Vector2 toTarget = target.Center - NPC.Center;
+            float baseAngle = toTarget.ToRotation();
+
+            const int laserCount = 10;
+            float spread = MathHelper.ToRadians(180f);
+
+            for (int i = 0; i < laserCount; i++)
+            {
+                float offset = MathHelper.Lerp(-spread / 2f, spread / 2f,
+                    laserCount == 1 ? 0.5f : i / (float)(laserCount - 1));
+                float angle = baseAngle + offset;
+
+                Vector2 velocity = angle.ToRotationVector2() * 9f;
+
+                Projectile.NewProjectile(
+                    NPC.GetSource_FromAI(),
+                    NPC.Center,
+                    velocity,
+                    ProjectileID.DeathLaser,
+                    NPC.damage / 2,
+                    0f,
+                    Main.myPlayer
+                );
+            }
+
+            SoundEngine.PlaySound(SoundID.Item33 with { Pitch = -0.2f }, NPC.Center);
+
+    // DEBUG: remove this once it works
+    // Main.NewText($"Ocram fired {laserCount} lasers! life={NPC.life}/{NPC.lifeMax}");
+        }   
+
+        public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
+        {
+            NPC.lifeMax = (int)(NPC.lifeMax * 0.5f * balance * bossAdjustment);
+            NPC.damage = (int)(NPC.damage * 0.7f);
+        }
+
+        public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+        {
+            bestiaryEntry.Info.AddRange(new List<IBestiaryInfoElement> {
+                BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Times.NightTime,
+                new FlavorTextBestiaryInfoElement("A corrupted eye of the night, twisted by otherworldly power.")
+            });
+        }
+
+        public override void ModifyNPCLoot(NPCLoot npcLoot)
+        {
+            // === 100% guaranteed drops ===
+            npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<SoulofBlight>(), 1, 5, 16));
+            npcLoot.Add(ItemDropRule.Common(ItemID.AdamantiteOre, 1, 10, 38));
+            npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<SpectralArrow>(), 1, 20, 30));
+
+            // === Armor drops (33% chance for one piece, vanilla PS3 behavior) ===
+            npcLoot.Add(ItemDropRule.OneFromOptions(3,
+                ModContent.ItemType<DragonMask>(),
+                ModContent.ItemType<DragonBreastplate>(),
+                ModContent.ItemType<DragonGreaves>(),
+                ModContent.ItemType<TitanHelmet>(),
+                ModContent.ItemType<TitanMail>(),
+                ModContent.ItemType<TitanLeggings>(),
+                ModContent.ItemType<SpectralHeadgear>(),
+                ModContent.ItemType<SpectralArmor>(),
+                ModContent.ItemType<SpectralSubligar>()
+            ));
+
+            // === Vanity drops ===
+            npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<OcramTrophy>(), 10));
+            npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<OcramMask>(), 7));
+        }
+
+        public override void HitEffect(NPC.HitInfo hit)
+        {
+            if (Main.netMode != NetmodeID.Server && NPC.life <= 0)
+            {
+                for (int k = 0; k < 30; k++)
+                    Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.SeaSnail, 2.5f * hit.HitDirection, -2.5f, 0, default, 0.7f);
+
+                SoundEngine.PlaySound(SoundID.Item14, NPC.Center);
+                SoundEngine.PlaySound(SoundID.Roar with { Pitch = 0.25f, MaxInstances = 0 }, NPC.position);
+            }
+        }
+    }
+}

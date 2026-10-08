@@ -1,0 +1,337 @@
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using Terraria;
+using Terraria.Audio;
+using Terraria.GameContent.Bestiary;
+using Terraria.GameContent.ItemDropRules;
+using Terraria.ID;
+using Terraria.Localization;
+using Terraria.ModLoader;
+using PS3Mod.Content.Items;
+using PS3Mod.Content.Items.Armor.Vanity;
+using PS3Mod.Content.Items.Placeable.Banners;
+using PS3Mod.Content.Items.Armor;
+using PS3Mod.Content.Items.Ammo;
+
+namespace PS3Mod.Content.NPCs.Bosses.Ocram
+{
+    [AutoloadBossHead]
+    public class Ocram : ModNPC
+    {
+        private int laserTimer;
+        private bool wasDashingLastFrame = false;
+        private bool isPhaseTwo = false;
+
+        private int servantSummonTimer;          
+        private int servantsLeftToSpawn;         
+        private int servantSpawnDelay;           
+        private const int ServantSummonInterval = 150;  
+        private const int ServantSpawnDelayTicks = 6; 
+
+        public override void SetStaticDefaults()
+        {
+            Main.npcFrameCount[NPC.type] = Main.npcFrameCount[NPCID.EyeofCthulhu];
+
+            NPCID.Sets.MPAllowedEnemies[Type] = true;
+
+            NPCID.Sets.SpecificDebuffImmunity[Type][BuffID.Confused] = true;
+            NPCID.Sets.SpecificDebuffImmunity[Type][BuffID.Poisoned] = true;
+            NPCID.Sets.SpecificDebuffImmunity[Type][BuffID.ShadowFlame] = true;
+
+            NPCID.Sets.BossBestiaryPriority.Add(Type);
+
+            NPCID.Sets.NPCBestiaryDrawModifiers drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers()
+            {
+                CustomTexturePath = "PS3Mod/Assets/Textures/Bestiary/Ocram_Bestiary",
+                Position = new Vector2(0, -20f),
+                Scale = 1f,
+                PortraitPositionYOverride = -20f,
+                PortraitScale = 1f
+            };
+            NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
+        }
+
+        public override void SetDefaults()
+        {
+            NPC.width = 190;
+            NPC.height = 180;
+
+            NPC.aiStyle = 4;
+            AnimationType = NPCID.EyeofCthulhu;
+
+            NPC.lifeMax = 54000;
+            NPC.damage = 55;
+            NPC.defense = 36;
+            NPC.knockBackResist = 0f;
+
+            NPC.value = Item.buyPrice(gold: 15);
+            NPC.npcSlots = 10f;
+
+            NPC.boss = true;
+            NPC.lavaImmune = true;
+            NPC.noGravity = true;
+            NPC.noTileCollide = true;
+
+            NPC.SpawnWithHigherTime(30);
+
+            NPC.HitSound = SoundID.NPCHit18;
+            NPC.DeathSound = SoundID.NPCDeath18;
+
+            NPC.alpha = 0;
+
+            Music = MusicID.Boss5;
+        }
+
+        public override void AI()
+        {
+            base.AI();
+            
+            bool isDashing = NPC.ai[0] == 2f;
+
+            if (!isPhaseTwo && NPC.life <= NPC.lifeMax * 0.5f)
+            {
+                isPhaseTwo = true;
+                laserTimer = 0;              
+                wasDashingLastFrame = isDashing;
+            }
+
+            HandleServantSummoning();
+
+            if (!isPhaseTwo)
+            {
+                laserTimer++;
+                if (laserTimer >= 90)
+                {
+                    laserTimer = 0;
+                    FireLasers(ProjectileID.DeathLaser, 5);
+                }
+            }
+            else
+            {
+                if (!isDashing)
+                {
+                    laserTimer++;
+                    if (laserTimer >= 15)
+                    {
+                        laserTimer = 0;
+                        FireLasers(ProjectileID.EyeLaser, 2);
+                    }
+                }
+                else
+                {
+                    laserTimer = 0;
+
+                    if (!wasDashingLastFrame)
+                    {
+                        SpawnDemonScythes();
+                    }
+                }
+
+                wasDashingLastFrame = isDashing;
+            }
+        }
+
+        private void FireLasers(int projectileType, int damageDivisor)
+        {
+            if (Main.netMode == NetmodeID.MultiplayerClient)
+                return;
+
+            Player target = Main.player[NPC.target];
+            if (!target.active || target.dead)
+            {
+                NPC.TargetClosest(false);
+                target = Main.player[NPC.target];
+                if (!target.active || target.dead) return;
+            }
+
+            Vector2 toTarget = target.Center - NPC.Center;
+            float baseAngle = toTarget.ToRotation();
+            const int laserCount = 10;
+            float spread = MathHelper.ToRadians(180f);
+
+            for (int i = 0; i < laserCount; i++)
+            {
+                float offset = MathHelper.Lerp(-spread / 2f, spread / 2f,
+                    laserCount == 1 ? 0.5f : i / (float)(laserCount - 1));
+                Vector2 velocity = (baseAngle + offset).ToRotationVector2() * 9f;
+
+                Projectile.NewProjectile(
+                    NPC.GetSource_FromAI(),
+                    NPC.Center,
+                    velocity,
+                    projectileType,
+                    NPC.damage / damageDivisor,
+                    0f,
+                    Main.myPlayer
+                );
+            }
+
+            SoundEngine.PlaySound(SoundID.Item33 with { Pitch = -0.2f }, NPC.Center);
+        }
+
+        private void SpawnDemonScythes()
+        {
+            if (Main.netMode == NetmodeID.MultiplayerClient)
+                return;
+
+            Player target = Main.player[NPC.target];
+            if (!target.active || target.dead)
+            {
+                NPC.TargetClosest(false);
+                target = Main.player[NPC.target];
+                if (!target.active || target.dead) return;
+            }
+
+        
+            Vector2 dashDirection;
+            if (NPC.velocity.LengthSquared() > 0.1f)
+            {
+                dashDirection = NPC.velocity.SafeNormalize(Vector2.UnitX);
+            }
+            else
+            {
+                dashDirection = (target.Center - NPC.Center).SafeNormalize(Vector2.UnitX);
+            }
+
+            const int scytheCount = 10;
+            float spread = MathHelper.ToRadians(0f);
+
+            for (int i = 0; i < scytheCount; i++)
+            {
+                float offset = MathHelper.Lerp(-spread / 2f, spread / 2f,
+                    scytheCount == 1 ? 0.5f : i / (float)(scytheCount - 1));
+                float angle = dashDirection.ToRotation() + offset;
+                Vector2 velocity = angle.ToRotationVector2() * 3f;
+
+                Projectile.NewProjectile
+                (
+                    NPC.GetSource_FromAI(),
+                    NPC.Center,
+                    velocity,
+                    ProjectileID.DemonScythe,
+                    NPC.damage / 2,
+                    0f,
+                    Main.myPlayer
+                );
+            }
+
+            SoundEngine.PlaySound(SoundID.Item8 with { Pitch = -0.3f }, NPC.Center);
+        }
+        private void HandleServantSummoning()
+        {
+            if (Main.netMode == NetmodeID.MultiplayerClient)
+               return;
+
+            if (servantsLeftToSpawn > 0)
+            {
+                if (servantSpawnDelay > 0)
+                {
+                    servantSpawnDelay--; 
+                }
+                else
+                {
+                    SpawnServant();
+                    servantsLeftToSpawn--;
+                    servantSpawnDelay = ServantSpawnDelayTicks;
+                }
+            }
+
+            servantSummonTimer++;
+            if (servantSummonTimer >= ServantSummonInterval)
+            {
+                servantSummonTimer = 0;
+                servantsLeftToSpawn = isPhaseTwo ? 4 : 3; 
+                servantSpawnDelay = 0;                    
+            }
+        }
+
+        private void SpawnServant()
+        {       
+            Player target = Main.player[NPC.target];
+            if (!target.active || target.dead)
+            {
+                NPC.TargetClosest(false);
+                target = Main.player[NPC.target];
+                if (!target.active || target.dead) return;
+            }
+
+            Vector2 spawnPos = NPC.Center;
+
+            Vector2 velocity = (target.Center - spawnPos).SafeNormalize(Vector2.UnitX) * 4f;
+
+            int index = NPC.NewNPC
+            (
+                NPC.GetSource_FromAI(),
+                (int)spawnPos.X,
+                (int)spawnPos.Y,
+                ModContent.NPCType<ServantofOcram>(),
+                ai0: NPC.whoAmI   
+            );
+
+            if (index >= 0 && index < Main.maxNPCs)
+            {
+                Main.npc[index].velocity = velocity;
+                Main.npc[index].netUpdate = true;
+            }
+
+            for (int i = 0; i < 10; i++)
+            {
+                Dust.NewDust(spawnPos, 8, 8, DustID.SeaSnail, velocity.X * 0.5f, velocity.Y * 0.5f,
+                    0, default, 0.8f);
+            }
+            SoundEngine.PlaySound(SoundID.Item8 with { Pitch = 0.2f }, spawnPos);
+        }
+
+        public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
+        {
+            NPC.lifeMax = (int)(NPC.lifeMax * 0.5f * balance * bossAdjustment);
+            NPC.damage = (int)(NPC.damage * 0.7f);
+        }
+
+        public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+        {
+            bestiaryEntry.Info.AddRange(new List<IBestiaryInfoElement>
+            {
+                BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Times.NightTime,
+                new FlavorTextBestiaryInfoElement("A corrupted eye of the night, twisted by otherworldly power.")
+            });
+        }
+
+        public override void ModifyNPCLoot(NPCLoot npcLoot)
+        {
+            npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<SoulofBlight>(), 1, 5, 16));
+            npcLoot.Add(ItemDropRule.Common(ItemID.AdamantiteOre, 1, 10, 38));
+            npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<SpectralArrow>(), 1, 20, 30));
+
+            npcLoot.Add(ItemDropRule.OneFromOptions(3,
+                ModContent.ItemType<DragonMask>(),
+                ModContent.ItemType<DragonBreastplate>(),
+                ModContent.ItemType<DragonGreaves>(),
+                ModContent.ItemType<TitanHelmet>(),
+                ModContent.ItemType<TitanMail>(),
+                ModContent.ItemType<TitanLeggings>(),
+                ModContent.ItemType<SpectralHeadgear>(),
+                ModContent.ItemType<SpectralArmor>(),
+                ModContent.ItemType<SpectralSubligar>()
+            ));
+
+            npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<OcramTrophy>(), 10));
+            npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<OcramMask>(), 7));
+        }
+
+        public override void HitEffect(NPC.HitInfo hit)
+        {
+            if (Main.netMode != NetmodeID.Server && NPC.life <= 0)
+            {
+                for (int k = 0; k < 30; k++)
+                    Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.SeaSnail, 2.5f * hit.HitDirection, -2.5f, 0, default, 0.7f);
+
+                SoundEngine.PlaySound(SoundID.Item14, NPC.Center);
+                SoundEngine.PlaySound(SoundID.Roar with { Pitch = 0.25f, MaxInstances = 0 }, NPC.position);
+            }
+        }
+    }
+}
