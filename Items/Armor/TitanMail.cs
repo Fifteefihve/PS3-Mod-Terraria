@@ -9,10 +9,10 @@ namespace PS3Mod.Content.Items.Armor
     public class TitanMail : ModItem
     {
         public static readonly int RangedDamagePercent = 5;
-		public static readonly int NoAmmoChancePercent = 5;
-		public static readonly int RangedCritPercent = 10;
+        public static readonly int NoAmmoChancePercent = 5;
+        public static readonly int RangedCritPercent = 10;
 
-		public override LocalizedText Tooltip => base.Tooltip.WithFormatArgs(RangedDamagePercent, NoAmmoChancePercent, RangedCritPercent);
+        public override LocalizedText Tooltip => base.Tooltip.WithFormatArgs(RangedDamagePercent, NoAmmoChancePercent, RangedCritPercent);
         public override void SetDefaults()
         {
             Item.width = 30;
@@ -25,8 +25,22 @@ namespace PS3Mod.Content.Items.Armor
         public override void UpdateEquip(Player player)
         {
             player.GetDamage(DamageClass.Ranged) += RangedDamagePercent / 100f;
-			player.GetCritChance(DamageClass.Ranged) += RangedCritPercent;
-			player.GetModPlayer<TitanArmorPlayer>().NoAmmoConsumeChance += NoAmmoChancePercent / 100f;
+            player.GetCritChance(DamageClass.Ranged) += RangedCritPercent;
+            player.GetModPlayer<TitanArmorPlayer>().NoAmmoConsumeChance += NoAmmoChancePercent / 100f;
+        }
+
+        public override void AddRecipes()
+        {
+            foreach (int tier3 in new int[] { ItemID.AdamantiteBreastplate, ItemID.TitaniumBreastplate })
+                CreateRecipe()
+                    .AddIngredient(ItemID.HallowedPlateMail)
+                    .AddIngredient(ItemID.CobaltBreastplate)
+                    .AddIngredient(ItemID.MythrilChainmail)
+                    .AddIngredient(tier3)
+                    .AddIngredient(ItemID.SoulofSight, 20)
+                    .AddIngredient<SoulofBlight>(20)
+                    .AddTile(TileID.MythrilAnvil)
+                    .Register();
         }
     }
 }

@@ -66,7 +66,7 @@ namespace PS3Mod.Content.NPCs.Bosses.Ocram
             NPC.npcSlots = 10f;
 
             NPC.boss = true;
-            NPC.lavaImmune = true;
+            NPC.lavaImmune = true; 
             NPC.noGravity = true;
             NPC.noTileCollide = true;
 

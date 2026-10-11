@@ -45,12 +45,13 @@ namespace PS3Mod.Content.Items
                 int num9 = NPC.NewNPC(NPC.GetBossSpawnSource(player.whoAmI), (int)player.Center.X, (int)player.Center.Y, type);
                 Main.npc[num9].target = player.whoAmI;
                 string typeName2 = Main.npc[num9].TypeName;
-                if (Main.netMode == 0)
+
+                if (Main.netMode == NetmodeID.SinglePlayer)
                     Main.NewText(Language.GetTextValue("Announcement.HasAwoken", typeName2), 175, 75);
-                else if (Main.netMode == 2)
+
+                else if (Main.netMode == NetmodeID.Server)
                     ChatHelper.BroadcastChatMessage(NetworkText.FromKey("Announcement.HasAwoken", Main.npc[num9].GetTypeNetName()), new Color(175, 75, 255));
             }
-
             return true;
         }
     }

@@ -3,7 +3,7 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace PS3Mod.Content.NPCs.Bosses.Ocram   // match your namespace
+namespace PS3Mod.Content.NPCs.Bosses.Ocram  
 {
     public class OcramServantSwap : GlobalNPC
     {

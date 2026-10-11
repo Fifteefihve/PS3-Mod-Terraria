@@ -2,16 +2,15 @@ using Terraria;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Microsoft.Xna.Framework;
 
 namespace PS3Mod.Content.NPCs
 {
-	// Old-gen console / 3DS Spectral Elemental: a stronger, rarer Underground Hallow variant of the Chaos Elemental.
-	// Expects SpectralElemental.png using the same frame layout as the vanilla Chaos Elemental sprite sheet.
 	public class SpectralElemental : ModNPC
 	{
 		public override void SetStaticDefaults()
 		{
-			Main.npcFrameCount[Type] = Main.npcFrameCount[NPCID.ChaosElemental];
+			Main.npcFrameCount[Type] = 14;
 
 			NPCID.Sets.NPCBestiaryDrawModifiers value = new NPCID.Sets.NPCBestiaryDrawModifiers()
 			{
@@ -28,21 +27,28 @@ namespace PS3Mod.Content.NPCs
 			NPC.lifeMax = 400;
 			NPC.value = 600f; // 6 silver
 
-			AIType = NPCID.ChaosElemental;        // Fighter AI with the Chaos Elemental's teleporting
-			AnimationType = NPCID.ChaosElemental;
-
-			// TODO: Spectral Elemental Banner (needs a banner item + tile of your own).
+			AIType = NPCID.ChaosElemental;
+			BannerItem = ModContent.ItemType<Items.Placeable.Banners.SpectralElementalBanner>();
 		}
 
-		// The console wiki lists coins only (no item drops) for the Spectral Elemental,
-		// so there is no ModifyNPCLoot here.
+		public override void AI()
+		{
+			if (NPC.Center.X < Main.player[NPC.target].Center.X)
+			{
+				NPC.spriteDirection = 1; 
+			}
+			else
+			{
+				NPC.spriteDirection = -1; 
+			}
+		}
 
 		public override float SpawnChance(NPCSpawnInfo spawnInfo)
 		{
 			Player player = spawnInfo.Player;
 			if (Main.hardMode && player.ZoneHallow && player.ZoneRockLayerHeight)
 			{
-				return 0.05f; // Rarer than the Chaos Elemental. Spawn weight is a guess.
+				return 0.05f; 
 			}
 			return 0f;
 		}
@@ -56,5 +62,32 @@ namespace PS3Mod.Content.NPCs
 				new FlavorTextBestiaryInfoElement("Mods.PS3Mod.Bestiary.SpectralElemental"),
 			});
 		}
+
+		public override Color? GetAlpha(Color drawColor)
+		{
+			return Color.White * NPC.Opacity;
+		}
+
+		public override void FindFrame(int frameHeight)
+		{
+			if (NPC.velocity.Length() < 0.1f)
+			{
+				NPC.frameCounter = 0;
+				NPC.frame.Y = 0;
+				return;
+			}
+
+			NPC.frameCounter++;
+
+			if (NPC.frameCounter >= 4.0)
+			{
+				NPC.frameCounter = 0;
+				NPC.frame.Y += frameHeight;
+
+				if (NPC.frame.Y >= frameHeight * Main.npcFrameCount[Type])
+					NPC.frame.Y = 0;
+			}
+		}
+
 	}
 }

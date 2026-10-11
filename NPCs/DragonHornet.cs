@@ -6,8 +6,6 @@ using Terraria.ModLoader;
 
 namespace PS3Mod.Content.NPCs
 {
-	// Old-gen console / 3DS Dragon Hornet: a stronger Underground Jungle variant of the Hornet.
-	// Expects DragonHornet.png using the same frame layout as the vanilla Hornet sprite sheet.
 	public class DragonHornet : ModNPC
 	{
 		public override void SetStaticDefaults()
@@ -27,17 +25,17 @@ namespace PS3Mod.Content.NPCs
 			NPC.damage = 20;
 			NPC.defense = 20;
 			NPC.lifeMax = 75;
-			NPC.value = 4000f; // The wiki lists "40"; I read that as 40 silver. Adjust if it should be copper.
+			NPC.value = 4000f; 
 
-			AIType = NPCID.Hornet;        // Flying AI (it also fires stingers like the Hornet)
+			AIType = NPCID.Hornet;        
 			AnimationType = NPCID.Hornet;
 
-			// TODO: no banner is listed for the Dragon Hornet on the console wiki.
+			BannerItem = ModContent.ItemType<Items.Placeable.Banners.DragonHornetBanner>();
 		}
 
 		public override void ModifyNPCLoot(NPCLoot npcLoot)
 		{
-			npcLoot.Add(ItemDropRule.Common(ItemID.Stinger, 2, 1, 3)); // 50%, 1-3
+			npcLoot.Add(ItemDropRule.Common(ItemID.Stinger, 2, 1, 3)); 
 		}
 
 		public override float SpawnChance(NPCSpawnInfo spawnInfo)
@@ -45,7 +43,7 @@ namespace PS3Mod.Content.NPCs
 			Player player = spawnInfo.Player;
 			if (player.ZoneJungle && (player.ZoneDirtLayerHeight || player.ZoneRockLayerHeight))
 			{
-				return 0.1f; // Spawn weight is a guess.
+				return 0.1f; 
 			}
 			return 0f;
 		}
@@ -56,7 +54,6 @@ namespace PS3Mod.Content.NPCs
 			{
 				BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Jungle,
 				BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Underground,
-				new FlavorTextBestiaryInfoElement("Mods.PS3Mod.Bestiary.DragonHornet"),
 			});
 		}
 	}

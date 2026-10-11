@@ -22,14 +22,14 @@ namespace PS3Mod.Content.NPCs.Bosses.Ocram
     public class Ocram : ModNPC
     {
         private int laserTimer;
-        private bool wasDashingLastFrame = false;
+        private int burstTimer = 0;
         private bool isPhaseTwo = false;
-
-        private int servantSummonTimer;          
-        private int servantsLeftToSpawn;         
-        private int servantSpawnDelay;           
-        private const int ServantSummonInterval = 150;  
-        private const int ServantSpawnDelayTicks = 6; 
+        private int laserCount = 10;
+        private int servantSummonTimer;
+        private int servantsLeftToSpawn;
+        private int servantSpawnDelay;
+        private const int ServantSummonInterval = 90;
+        private const int ServantSpawnDelayTicks = 6;
 
         public override void SetStaticDefaults()
         {
@@ -59,15 +59,15 @@ namespace PS3Mod.Content.NPCs.Bosses.Ocram
             NPC.width = 190;
             NPC.height = 180;
 
-            NPC.aiStyle = 4;
+            NPC.aiStyle = NPCAIStyleID.EyeOfCthulhu;
             AnimationType = NPCID.EyeofCthulhu;
 
-            NPC.lifeMax = 54000;
-            NPC.damage = 55;
-            NPC.defense = 36;
+            NPC.lifeMax = 35000;
+            NPC.damage = 65;
+            NPC.defense = 20;
             NPC.knockBackResist = 0f;
 
-            NPC.value = Item.buyPrice(gold: 15);
+            NPC.value = 100000f;
             NPC.npcSlots = 10f;
 
             NPC.boss = true;
@@ -88,53 +88,44 @@ namespace PS3Mod.Content.NPCs.Bosses.Ocram
         public override void AI()
         {
             base.AI();
-            
-            bool isDashing = NPC.ai[0] == 2f;
 
-            if (!isPhaseTwo && NPC.life <= NPC.lifeMax * 0.5f)
+            bool isDashing = NPC.velocity.Length() > 12f;
+
+            if (NPC.life <= NPC.lifeMax * 0.5f)
             {
                 isPhaseTwo = true;
-                laserTimer = 0;              
-                wasDashingLastFrame = isDashing;
+                laserTimer = 0;
             }
 
             HandleServantSummoning();
 
+            // phase 1
             if (!isPhaseTwo)
             {
                 laserTimer++;
                 if (laserTimer >= 90)
                 {
                     laserTimer = 0;
-                    FireLasers(ProjectileID.DeathLaser, 5);
+                    FireLasers(ProjectileID.DeathLaser, 5, 10, 180f);   // 10 lasers, wide
                 }
             }
+            // phase 2
             else
             {
                 if (!isDashing)
                 {
-                    laserTimer++;
-                    if (laserTimer >= 15)
+                    burstTimer = (burstTimer + 1) % 600;
+
+                    // 3 seconds of firing (180 ticks), then 7 seconds of rest
+                    if (burstTimer < 180 && burstTimer % 2 == 0)
                     {
-                        laserTimer = 0;
-                        FireLasers(ProjectileID.EyeLaser, 2);
+                        FireLasers(ProjectileID.EyeLaser, 2, 2, 12f);   // 2 lasers, narrow 
                     }
                 }
-                else
-                {
-                    laserTimer = 0;
-
-                    if (!wasDashingLastFrame)
-                    {
-                        SpawnDemonScythes();
-                    }
-                }
-
-                wasDashingLastFrame = isDashing;
             }
         }
 
-        private void FireLasers(int projectileType, int damageDivisor)
+        void FireLasers(int projectileType, int damageDivisor, int count, float spreadDegrees = 12f)
         {
             if (Main.netMode == NetmodeID.MultiplayerClient)
                 return;
@@ -147,20 +138,22 @@ namespace PS3Mod.Content.NPCs.Bosses.Ocram
                 if (!target.active || target.dead) return;
             }
 
-            Vector2 toTarget = target.Center - NPC.Center;
-            float baseAngle = toTarget.ToRotation();
-            const int laserCount = 10;
-            float spread = MathHelper.ToRadians(180f);
+            float baseAngle = (target.Center - NPC.Center).ToRotation();
+            float spread = MathHelper.ToRadians(spreadDegrees);
 
-            for (int i = 0; i < laserCount; i++)
+            for (int i = 0; i < count; i++)
             {
-                float offset = MathHelper.Lerp(-spread / 2f, spread / 2f,
-                    laserCount == 1 ? 0.5f : i / (float)(laserCount - 1));
-                Vector2 velocity = (baseAngle + offset).ToRotationVector2() * 9f;
+                Vector2 spawnPos = NPC.Center + new Vector2(
+                    Main.rand.NextFloat(-500f, 500f),
+                    Main.rand.NextFloat(-40f, 40f));
+
+                float angle = baseAngle + Main.rand.NextFloat(-spread / 2f, spread / 2f);
+                float speed = Main.rand.NextFloat(8f, 15f);
+                Vector2 velocity = angle.ToRotationVector2() * speed;
 
                 Projectile.NewProjectile(
                     NPC.GetSource_FromAI(),
-                    NPC.Center,
+                    spawnPos,
                     velocity,
                     projectileType,
                     NPC.damage / damageDivisor,
@@ -168,8 +161,6 @@ namespace PS3Mod.Content.NPCs.Bosses.Ocram
                     Main.myPlayer
                 );
             }
-
-            SoundEngine.PlaySound(SoundID.Item33 with { Pitch = -0.2f }, NPC.Center);
         }
 
         private void SpawnDemonScythes()
@@ -185,7 +176,7 @@ namespace PS3Mod.Content.NPCs.Bosses.Ocram
                 if (!target.active || target.dead) return;
             }
 
-        
+
             Vector2 dashDirection;
             if (NPC.velocity.LengthSquared() > 0.1f)
             {
@@ -199,10 +190,11 @@ namespace PS3Mod.Content.NPCs.Bosses.Ocram
             const int scytheCount = 10;
             float spread = MathHelper.ToRadians(0f);
 
+
             for (int i = 0; i < scytheCount; i++)
             {
                 float offset = MathHelper.Lerp(-spread / 2f, spread / 2f,
-                    scytheCount == 1 ? 0.5f : i / (float)(scytheCount - 1));
+                scytheCount == 1 ? 0.5f : i / (float)(scytheCount - 1));
                 float angle = dashDirection.ToRotation() + offset;
                 Vector2 velocity = angle.ToRotationVector2() * 3f;
 
@@ -223,13 +215,13 @@ namespace PS3Mod.Content.NPCs.Bosses.Ocram
         private void HandleServantSummoning()
         {
             if (Main.netMode == NetmodeID.MultiplayerClient)
-               return;
+                return;
 
             if (servantsLeftToSpawn > 0)
             {
                 if (servantSpawnDelay > 0)
                 {
-                    servantSpawnDelay--; 
+                    servantSpawnDelay--;
                 }
                 else
                 {
@@ -243,13 +235,13 @@ namespace PS3Mod.Content.NPCs.Bosses.Ocram
             if (servantSummonTimer >= ServantSummonInterval)
             {
                 servantSummonTimer = 0;
-                servantsLeftToSpawn = isPhaseTwo ? 4 : 3; 
-                servantSpawnDelay = 0;                    
+                servantsLeftToSpawn = isPhaseTwo ? 4 : 3;
+                servantSpawnDelay = 0;
             }
         }
 
         private void SpawnServant()
-        {       
+        {
             Player target = Main.player[NPC.target];
             if (!target.active || target.dead)
             {
@@ -268,7 +260,7 @@ namespace PS3Mod.Content.NPCs.Bosses.Ocram
                 (int)spawnPos.X,
                 (int)spawnPos.Y,
                 ModContent.NPCType<ServantofOcram>(),
-                ai0: NPC.whoAmI   
+                ai0: NPC.whoAmI
             );
 
             if (index >= 0 && index < Main.maxNPCs)
@@ -293,8 +285,7 @@ namespace PS3Mod.Content.NPCs.Bosses.Ocram
 
         public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
         {
-            bestiaryEntry.Info.AddRange(new List<IBestiaryInfoElement>
-            {
+            bestiaryEntry.Info.AddRange(new List<IBestiaryInfoElement> {
                 BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Times.NightTime,
                 new FlavorTextBestiaryInfoElement("A corrupted eye of the night, twisted by otherworldly power.")
             });

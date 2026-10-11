@@ -45,7 +45,6 @@ namespace PS3Mod.Content.Items
                 ProjectileID.FlamingJack, damage, Item.knockBack, player.whoAmI);
         }
 
-        //Draws the dropped item at full brightness, even in the dark
         public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor,
             ref float rotation, ref float scale, int whoAmI)
         {
@@ -58,15 +57,7 @@ namespace PS3Mod.Content.Items
 
         public override Color? GetAlpha(Color lightColor)
         {
-            // Aside from SetDefaults, when making a copy of a vanilla weapon you may have to hunt down other bits of code. This code makes the item draw in full brightness when dropped.
             return Color.White;
-        }
-
-        public override void AddRecipes()
-        {
-            CreateRecipe(1)
-                .AddIngredient(ItemID.TheHorsemansBlade, 1)
-                .Register();
         }
     }
 }

@@ -11,10 +11,10 @@ namespace PS3Mod.Content.Items
         public override void SetStaticDefaults()
         {
             ItemID.Sets.AnimatesAsSoul[Type] = true;
-            ItemID.Sets.ItemIconPulse[Type] = true; // The item pulses while in the player's inventory
-            ItemID.Sets.ItemNoGravity[Type] = true; // Makes the item have no gravity
+            ItemID.Sets.ItemIconPulse[Type] = true; 
+            ItemID.Sets.ItemNoGravity[Type] = true; 
             Main.RegisterItemAnimation(Item.type, new DrawAnimationVertical(1, 1));
-            Item.ResearchUnlockCount = 25; // Configure the amount of this item that's needed to research it in Journey mode.
+            Item.ResearchUnlockCount = 25; 
         }
 
         public override void SetDefaults()
@@ -22,18 +22,18 @@ namespace PS3Mod.Content.Items
             Item.width = 18;
             Item.height = 18;
             Item.maxStack = Item.CommonMaxStack;
-            Item.value = 1000; // Makes the item worth 1 gold.
+            Item.value = 1000; 
             Item.rare = ItemRarityID.Orange;
         }
 
         public override void PostUpdate()
         {
-            Lighting.AddLight(Item.Center, Color.WhiteSmoke.ToVector3() * 0.55f * Main.essScale); // Makes this item glow when thrown out of inventory.
+            Lighting.AddLight(Item.Center, Color.WhiteSmoke.ToVector3() * 0.55f * Main.essScale); 
         }
 
         public override Color? GetAlpha(Color lightColor)
         {
-            return new Color(255, 255, 255, 50); // Makes this item render at full brightness.
+            return new Color(255, 255, 255, 50); 
         }
     }
 }

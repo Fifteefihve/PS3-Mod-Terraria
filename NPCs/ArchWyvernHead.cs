@@ -1,6 +1,5 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using PS3Mod.Content.Items.Placeable.Banners;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -68,13 +67,12 @@ namespace PS3Mod.Content.NPCs
             NPC.value = Item.buyPrice(gold: 1, silver: 75);
 
             Banner = NPC.type;
-            BannerItem = ModContent.ItemType<ArchWyvernBanner>();
+            BannerItem = ModContent.ItemType<Items.Placeable.Banners.ArchWyvernBanner>();
         }
 
         public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
         {
-            bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
-            {
+            bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[] {
                 BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Sky,
                 new FlavorTextBestiaryInfoElement(BestiaryText.ToString())
             });
@@ -90,11 +88,15 @@ namespace PS3Mod.Content.NPCs
         {
             Player player = Main.player[NPC.target];
 
-            if (NPC.target < 0 || NPC.target == 250 || player.dead)
-            NPC.TargetClosest(true);
+            if (NPC.target < 0 || NPC.target == 250 || player.dead) NPC.TargetClosest(true);
+            if (player.dead && NPC.timeLeft > 300) NPC.timeLeft = 300;
 
-            if (player.dead && NPC.timeLeft > 300)
-            NPC.timeLeft = 300;
+            shootTimer++;
+            if (shootTimer >= 90 && shootTimer % 3 == 0)
+            {
+                SoundEngine.PlaySound(SoundID.Item20 with { MaxInstances = 1 }, NPC.position);
+            }
+            if (shootTimer >= 120) shootTimer = 0;
 
             if (Main.netMode != NetmodeID.MultiplayerClient)
             {

@@ -9,11 +9,11 @@ namespace PS3Mod.Content.Items.Armor
     public class SpectralHeadgear : ModItem
     {
         public static readonly int MaxManaIncrease = 100;
-		public static readonly int MagicDamagePercent = 10;
-		public static readonly int MagicCritPercent = 10;
-		public static readonly int SetBonusManaCostReductionPercent = 23;
+        public static readonly int MagicDamagePercent = 10;
+        public static readonly int MagicCritPercent = 10;
+        public static readonly int SetBonusManaCostReductionPercent = 23;
 
-		public override LocalizedText Tooltip => base.Tooltip.WithFormatArgs(MaxManaIncrease, MagicDamagePercent);
+        public override LocalizedText Tooltip => base.Tooltip.WithFormatArgs(MaxManaIncrease, MagicDamagePercent);
         public override void SetDefaults()
         {
             Item.width = 20;
@@ -26,19 +26,32 @@ namespace PS3Mod.Content.Items.Armor
         public override void UpdateEquip(Player player)
         {
             player.statManaMax2 += MaxManaIncrease;
-			player.GetDamage(DamageClass.Magic) += MagicDamagePercent / 100f;
-			player.GetCritChance(DamageClass.Magic) += MagicCritPercent;
+            player.GetDamage(DamageClass.Magic) += MagicDamagePercent / 100f;
+            player.GetCritChance(DamageClass.Magic) += MagicCritPercent;
         }
 
         public override void UpdateArmorSet(Player player)
         {
             player.setBonus = $"{SetBonusManaCostReductionPercent}% reduced mana usage";
-			player.manaCost -= SetBonusManaCostReductionPercent / 100f;
+            player.manaCost -= SetBonusManaCostReductionPercent / 100f;
         }
 
         public override bool IsArmorSet(Item head, Item body, Item legs)
         {
-			return body.type == ModContent.ItemType<SpectralArmor>() && legs.type == ModContent.ItemType<SpectralSubligar>();
-		}
+            return body.type == ModContent.ItemType<SpectralArmor>() && legs.type == ModContent.ItemType<SpectralSubligar>();
+        }
+
+        public override void AddRecipes()
+        {
+            foreach (int tier3 in new int[] { ItemID.AdamantiteHeadgear, ItemID.TitaniumHeadgear })
+                CreateRecipe()
+                    .AddIngredient(ItemID.HallowedHeadgear)
+                    .AddIngredient(ItemID.CobaltHat)
+                    .AddIngredient(ItemID.MythrilHood)
+                    .AddIngredient(tier3)
+                    .AddIngredient<SoulofBlight>(15)
+                    .AddTile(TileID.MythrilAnvil)
+                    .Register();
+        }
     }
 }

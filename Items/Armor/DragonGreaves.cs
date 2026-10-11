@@ -9,7 +9,7 @@ namespace PS3Mod.Content.Items.Armor
     public class DragonGreaves : ModItem
     {
         public static readonly int MoveSpeedPercent = 12;
-		public static readonly int MeleeSpeedPercent = 2;
+        public static readonly int MeleeSpeedPercent = 2;
 
         public override LocalizedText Tooltip => base.Tooltip.WithFormatArgs(MoveSpeedPercent, MeleeSpeedPercent);
         public override void SetDefaults()
@@ -24,9 +24,21 @@ namespace PS3Mod.Content.Items.Armor
         public override void UpdateEquip(Player player)
         {
             player.moveSpeed += MoveSpeedPercent / 100f;
-			player.GetAttackSpeed(DamageClass.Melee) += MeleeSpeedPercent / 100f;
+            player.GetAttackSpeed(DamageClass.Melee) += MeleeSpeedPercent / 100f;
         }
 
-        
+        public override void AddRecipes()
+        {
+            foreach (int tier3 in new int[] { ItemID.AdamantiteLeggings, ItemID.TitaniumLeggings })
+                CreateRecipe()
+                    .AddIngredient(ItemID.HallowedGreaves)
+                    .AddIngredient(ItemID.CobaltLeggings)
+                    .AddIngredient(ItemID.MythrilGreaves)
+                    .AddIngredient(tier3)
+                    .AddIngredient(ItemID.SoulofMight, 15)
+                    .AddIngredient<SoulofBlight>(15)
+                    .AddTile(TileID.MythrilAnvil)
+                    .Register();
+        }
     }
 }

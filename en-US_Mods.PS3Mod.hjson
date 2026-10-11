@@ -6,7 +6,7 @@ Items: {
 
 	SoulOfBlight: {
 		DisplayName: Soul Of Blight
-		Tooltip: ""
+		Tooltip: The essence of infected creatures
 	}
 
 	Sharanga: {
@@ -31,7 +31,6 @@ Items: {
 
 	DragonMask: {
 		DisplayName: Dragon Mask
-		SetBonus: "{0}% increased melee and movement speed"
 		Tooltip:
 			'''
 			{0}% increased melee speed and damage
@@ -127,7 +126,7 @@ Items: {
 	}
 
 	HoneycombPetItem: {
-		DisplayName: Honeycomb
+		DisplayName: Beeswax
 		Tooltip: Summons a pet tiphia
 	}
 
@@ -138,7 +137,132 @@ Items: {
 
 	PetriDishPetItem: {
 		DisplayName: Petri Dish
-		Tooltip: Summons a slime pet
+		Tooltip: Summons a pet slime
+	}
+
+	AlbinoAntlionBanner: {
+		DisplayName: Albino Antlion Banner
+		Tooltip: ""
+	}
+
+	ArchDemonBanner: {
+		DisplayName: Arch Demon Banner
+		Tooltip: ""
+	}
+
+	ArchWyvernBanner: {
+		DisplayName: Arch Wyvern Banner
+		Tooltip: ""
+	}
+
+	DragonHornetBanner: {
+		DisplayName: Dragon Hornet Banner
+		Tooltip: ""
+	}
+
+	DragonSkullBanner: {
+		DisplayName: Dragon Skull Banner
+		Tooltip: ""
+	}
+
+	DragonSnatcherBanner: {
+		DisplayName: Dragon Snatcher Banner
+		Tooltip: ""
+	}
+
+	ShadowHammerBanner: {
+		DisplayName: Shadow Hammer Banner
+		Tooltip: ""
+	}
+
+	ShadowMummyBanner: {
+		DisplayName: Shadow Mummy Banner
+		Tooltip: ""
+	}
+
+	ShadowSlimeBanner: {
+		DisplayName: Shadow Slime Banner
+		Tooltip: ""
+	}
+
+	SpectralElementalBanner: {
+		DisplayName: Spectral Elemental Banner
+		Tooltip: ""
+	}
+
+	SpectralGastropodBanner: {
+		DisplayName: Spectral Gastropod Banner
+		Tooltip: ""
+	}
+
+	SpectralMummyBanner: {
+		DisplayName: Spectral Mummy Banner
+		Tooltip: ""
+	}
+
+	VampireMinerBanner: {
+		DisplayName: Vampire Miner Banner
+		Tooltip: ""
+	}
+
+	SuspiciousLookingSkull: {
+		Tooltip: ""
+		DisplayName: Suspicious Looking Skull
+	}
+
+	SoulofBlight: {
+		Tooltip: The essence of infected creatures
+		DisplayName: Soul of Blight
+	}
+
+	OcramTrophy: {
+		Tooltip: ""
+		DisplayName: Ocram Trophy
+	}
+
+	OcramMask: {
+		Tooltip: ""
+		DisplayName: Ocram Mask
+	}
+
+	OldHorsemansBlade: {
+		DisplayName: Horsemans Blade
+		Tooltip: ""
+	}
+
+	OldTerraBlade: {
+		DisplayName: Terra Blade
+		Tooltip: ""
+	}
+
+	OldTNE: {
+		DisplayName: True Night's Edge
+		Tooltip: ""
+	}
+
+	OldTrueExcalibur: {
+		DisplayName: True Excalibur
+		Tooltip: ""
+	}
+
+	NightsEdge: {
+		Tooltip: ""
+		DisplayName: Night's Edge
+	}
+
+	LightsBane: {
+		Tooltip: ""
+		DisplayName: Light's Bane
+	}
+
+	Excalibur: {
+		Tooltip: ""
+		DisplayName: Excalibur
+	}
+
+	BladeofGrass: {
+		Tooltip: ""
+		DisplayName: Blade of Grass
 	}
 }
 
@@ -152,6 +276,7 @@ Projectiles: {
 	WaspPetProjectile.DisplayName: Wasp Pet Projectile
 	ZombiePetProjectile.DisplayName: Zombie Pet Projectile
 	PetSlimeProjectile.DisplayName: Pet Slime Projectile
+	OldTerraBeam.DisplayName: Old Terra Beam
 }
 
 Buffs: {
@@ -184,4 +309,63 @@ Buffs: {
 		DisplayName: Pet Slime Pet Buff
 		Description: Mods.PS3Mod.Buffs.PetSlimePetBuff.Description
 	}
+}
+
+NPCs: {
+	AlbinoAntlion: {
+		Bestiary: Mods.PS3Mod.NPCs.AlbinoAntlion.Bestiary
+		DisplayName: Albino Antlion
+	}
+
+	ArchWyvernHead: {
+		Bestiary: Mods.PS3Mod.NPCs.ArchWyvernHead.Bestiary
+		DisplayName: Arch Wyvern Head
+	}
+
+	DragonSnatcher: {
+		Bestiary: Mods.PS3Mod.NPCs.DragonSnatcher.Bestiary
+		DisplayName: Dragon Snatcher
+	}
+
+	ShadowHammer: {
+		Bestiary: Mods.PS3Mod.NPCs.ShadowHammer.Bestiary
+		DisplayName: Shadow Hammer
+	}
+
+	ShadowMummy: {
+		Bestiary: Mods.PS3Mod.NPCs.ShadowMummy.Bestiary
+		DisplayName: Shadow Mummy
+	}
+
+	ShadowSlime: {
+		Bestiary: Mods.PS3Mod.NPCs.ShadowSlime.Bestiary
+		DisplayName: Shadow Slime
+	}
+
+	SpectralGastropod: {
+		Bestiary: Mods.PS3Mod.NPCs.SpectralGastropod.Bestiary
+		DisplayName: Spectral Gastropod
+	}
+
+	SpectralMummy: {
+		Bestiary: Mods.PS3Mod.NPCs.SpectralMummy.Bestiary
+		DisplayName: Spectral Mummy
+	}
+
+	VampireMiner: {
+		Bestiary: Mods.PS3Mod.NPCs.VampireMiner.Bestiary
+		DisplayName: Vampire Miner
+	}
+
+	ArchDemon.DisplayName: Arch Demon
+	ArchWyvernBody1.DisplayName: Arch Wyvern Body1
+	ArchWyvernBody2.DisplayName: Arch Wyvern Body2
+	ArchWyvernBody3.DisplayName: Arch Wyvern Body3
+	ArchWyvernLegs.DisplayName: Arch Wyvern Legs
+	ArchWyvernTail.DisplayName: Arch Wyvern Tail
+	DragonHornet.DisplayName: Dragon Hornet
+	DragonSkull.DisplayName: Dragon Skull
+	SpectralElemental.DisplayName: Spectral Elemental
+	ServantofOcram.DisplayName: Servant of Ocram
+	Ocram.DisplayName: Ocram
 }

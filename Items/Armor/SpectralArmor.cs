@@ -9,10 +9,10 @@ namespace PS3Mod.Content.Items.Armor
     public class SpectralArmor : ModItem
     {
         public static readonly int MagicDamagePercent = 5;
-		public static readonly int ManaCostReductionPercent = 10;
-		public static readonly int MagicCritPercent = 10;
+        public static readonly int ManaCostReductionPercent = 10;
+        public static readonly int MagicCritPercent = 10;
 
-		public override LocalizedText Tooltip => base.Tooltip.WithFormatArgs(MagicDamagePercent, ManaCostReductionPercent, MagicCritPercent);
+        public override LocalizedText Tooltip => base.Tooltip.WithFormatArgs(MagicDamagePercent, ManaCostReductionPercent, MagicCritPercent);
         public override void SetDefaults()
         {
             Item.width = 30;
@@ -25,8 +25,22 @@ namespace PS3Mod.Content.Items.Armor
         public override void UpdateEquip(Player player)
         {
             player.GetDamage(DamageClass.Magic) += MagicDamagePercent / 100f;
-			player.manaCost -= ManaCostReductionPercent / 100f;
-			player.GetCritChance(DamageClass.Magic) += MagicCritPercent;
+            player.manaCost -= ManaCostReductionPercent / 100f;
+            player.GetCritChance(DamageClass.Magic) += MagicCritPercent;
+        }
+
+        public override void AddRecipes()
+        {
+            foreach (int tier3 in new int[] { ItemID.AdamantiteBreastplate, ItemID.TitaniumBreastplate })
+                CreateRecipe()
+                    .AddIngredient(ItemID.HallowedPlateMail)
+                    .AddIngredient(ItemID.CobaltBreastplate)
+                    .AddIngredient(ItemID.MythrilChainmail)
+                    .AddIngredient(tier3)
+                    .AddIngredient(ItemID.SoulofFright, 10)
+                    .AddIngredient<SoulofBlight>(20)
+                    .AddTile(TileID.MythrilAnvil)
+                    .Register();
         }
     }
 }
